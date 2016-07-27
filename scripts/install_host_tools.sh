@@ -19,5 +19,7 @@ sudo usernmod -aG acomautomation jenkins
 sudo mkdir /usr/local/acomautomation
 sudo chown -R jenkins:acomautomation /usr/local/acomautomation
 
-mkdir /var/lib/jenkins/jobs/sample-acom-job
-wget -q -O /var/lib/jenkins/jobs/sample-acom-job/config.xml https://raw.githubusercontent.com/iainfoulds/acom-automation/master/scripts/jenkins_example_config.xml
+sudo mkdir /var/lib/jenkins/jobs/sample-acom-job
+sudo wget -q -O /var/lib/jenkins/jobs/sample-acom-job/config.xml https://raw.githubusercontent.com/iainfoulds/acom-automation/master/scripts/jenkins_example_config.xml
+sudo chown -R jenkins:jenkins sample-acom-job
+sudo service jenkins force-reload
