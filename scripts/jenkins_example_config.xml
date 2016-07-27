@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Sample Jenkins job
+  Provides custom replacement value for &lt;size-in-GB&gt;&#xd;
+  Also requests a resource group, storage account, virtual network, and VM be created</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>5</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>cd /usr/local/acomautomation/azure-content-pr
+git pull upstream master</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>python /usr/local/acomautomation/code_parser.py &quot;articles/virtual-machines/virtual-machines-linux-add-disk.md&quot;
+python /usr/local/acomautomation/code_cleaner.py --resourcegroup=myuniquegroupname --virtualmachine=myuniquevmname --custom=size-in-GB --replace=5
+python /usr/local/acomautomation/arm_helper.py --resourcegroup --storageaccount --virtualnetwork --virtualmachine</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>python /usr/local/acomautomation/docker_builder.py</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.Mailer plugin="mailer@1.11">
+      <recipients>your.email@microsoft.com</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers/>
+</project>
