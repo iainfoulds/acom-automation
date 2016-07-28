@@ -1,29 +1,27 @@
 ## Installing the environment
 The bulk of the install and configure is handled through the use of an Azure Resource Manager (ARM) template and custom script extension (but of course!).
 
-The ARM template will create an Ubuntu 16.04-LTS VM, then the custom script will install the latest Jenkins and Docker stable builds. The azure-content repo will be cloned from GitHub and a local copy created in order to get access to the actively published versions of the azure.com documentation set.
+The ARM template will create an Ubuntu 16.04-LTS VM, then the custom script will install the latest Jenkins and Docker stable builds. The azure-content repo will be cloned from GitHub and a local copy created in order to get access to the actively published versions of the azure.com documentation set. The VM will deploy in just a few minutes, but be patient while the custom script extension runs the configuration script for all of this. Wait until Azure reports the deployment has completed before actually trying to get Jenkins working on some code :)
 
-Deploy the ARM template through the portal:
+You can deploy the ARM template through the portal:
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fiainfoulds%2Facom-automation%2Fmaster%2Farmtemplate%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-Via the Azure CLI:
+Using the Azure CLI:
 
 ```bash
 azure group create ACOMAutomation --location westus
 azure group deployment create --resource-group ACOMAutomation --template-uri https://raw.githubusercontent.com/iainfoulds/acom-automation/master/armtemplate/azuredeploy.json
 ```
 
-Via Azure PowerShell:
+Or by using Azure PowerShell:
 
 ```powershell
 New-AzureRmResourceGroup -Name ACOMAutomation -Location "West US"
 New-AzureRmResourceGroupDeployment -Name ACOMAutomation -ResourceGroupName ACOMAutomation -TemplateUri https://raw.githubusercontent.com/iainfoulds/acom-automation/master/armtemplate/azuredeploy.json
 ```
-
-
 
 ## Configuring Git and Jenkins authentication
 

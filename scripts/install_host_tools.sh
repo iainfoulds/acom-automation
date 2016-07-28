@@ -18,10 +18,11 @@ sudo usermod -aG acomautomation jenkins
 sudo mkdir /usr/local/acomautomation
 
 # Configure git to grab the azure-content repo, configure permissions
+cd /usr/local/acomautomation
 sudo git clone https://github.com/azure/azure-content.git
 cd azure-content
 sudo git remote add upstream https://github.com/Azure/azure-content.git
-sudo it fetch upstream
+sudo git fetch upstream
 sudo git pull upstream master
 
 sudo chown -R jenkins:acomautomation /usr/local/acomautomation
