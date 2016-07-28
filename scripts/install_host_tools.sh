@@ -8,14 +8,20 @@ wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add
 sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 sudo apt-get update && sudo apt-get install jenkins -y
 
-# Grab the latest Docker build and install
-curl -sSL https://get.docker.com/ | sh
-sudo usermod -aG docker jenkins
-
 # Add a group for automation, add the Jenkins user, create a local directory
 sudo groupadd acomautomation
 sudo usermod -aG acomautomation jenkins
 sudo mkdir /usr/local/acomautomation
+
+# Pull down the sample Jenkins project and restart Jenkins to load it in to memory
+sudo mkdir /var/lib/jenkins/jobs/sample-acom-job
+sudo wget -q -O /var/lib/jenkins/jobs/sample-acom-job/config.xml https://raw.githubusercontent.com/iainfoulds/acom-automation/master/scripts/jenkins_example_config.xml
+sudo chown -R jenkins:acomautomation /var/lib/jenkins/jobs/sample-acom-job
+sudo service jenkins force-reload
+
+# Grab the latest Docker build and install
+curl -sSL https://get.docker.com/ | sh
+sudo usermod -aG docker jenkins
 
 # Configure git to grab the azure-content repo, configure permissions
 cd /usr/local/acomautomation
@@ -26,9 +32,3 @@ sudo git fetch upstream
 sudo git pull upstream master
 
 sudo chown -R jenkins:acomautomation /usr/local/acomautomation
-
-# Pull down the sample Jenkins project and restart Jenkins to load it in to memory
-sudo mkdir /var/lib/jenkins/jobs/sample-acom-job
-sudo wget -q -O /var/lib/jenkins/jobs/sample-acom-job/config.xml https://raw.githubusercontent.com/iainfoulds/acom-automation/master/scripts/jenkins_example_config.xml
-sudo chown -R jenkins:jenkins /var/lib/jenkins/jobs/sample-acom-job
-sudo service jenkins force-reload
