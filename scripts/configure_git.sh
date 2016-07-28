@@ -8,4 +8,4 @@ git remote add upstream https://[your GitHub user name]:[token]@github.com/Azure
 git fetch upstream
 git pull upstream master
 
-chown -R jenkins:acomautomation azure-content-pr
+chown -R jenkins:acomautomation /usr/local/acomautomation/azure-content-pr
