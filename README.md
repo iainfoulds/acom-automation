@@ -5,7 +5,7 @@ The ARM template will create an Ubuntu 16.04-LTS VM, then the custom script will
 
 Deploy the ARM template through the portal:
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fiainfoulds%2Facom-automation%2Fmaster%2armtemplate%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fiainfoulds%2Facom-automation%2Fmaster%2Farmtemplate%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
