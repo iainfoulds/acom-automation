@@ -1,7 +1,7 @@
 ## Installing the environment
 The bulk of the install and configure is handled through the use of an Azure Resource Manager (ARM) template and custom script extension (but of course!).
 
-The ARM template will create an Ubuntu 16.04-LTS VM, then the custom script will install the latest Jenkins and Docker stable builds. A configuration script for git will also be copied over to the VM, but you'll need to SSH to the VM in order to provide your GitHub username and access token in order to clone and pull down the ACOM repository. See [the configuration steps below](#configuring-git-and-jenkins authentication).
+The ARM template will create an Ubuntu 16.04-LTS VM, then the custom script will install the latest Jenkins and Docker stable builds. The azure-content repo will be cloned from GitHub and a local copy created in order to get access to the actively published versions of the azure.com documentation set.
 
 Deploy the ARM template through the portal:
 
@@ -18,39 +18,29 @@ azure group deployment create --resource-group ACOMAutomation --template-uri htt
 
 Via Azure PowerShell:
 
+```powershell
+New-AzureRmResourceGroup -Name ACOMAutomation -Location "West US"
+New-AzureRmResourceGroupDeployment -Name ACOMAutomation -ResourceGroupName ACOMAutomation -TemplateUri https://raw.githubusercontent.com/iainfoulds/acom-automation/master/armtemplate/azuredeploy.json
+```
+
+
 
 ## Configuring Git and Jenkins authentication
 
-1. Use an SSH client (such as Putty for Windows users) to SSH to the DNS name you specified during deployment
-2. Edit the `configure_git.sh` script:
+A Network Security Group and rules are created in the ARM template for you to make it publicly accessible, however the Jenkins web interface is secured by default so you need to obtain the admin password in order to log in. If you think this is an overly complex way of doing it, this is a Jenkins thing and not because of the deployment model in use here:
 
-    ```bash
-    sudo nano /usr/local/acomautomation/configure_git.sh
-    ```
+SSH to your VM using the DNS name you specified during the deployment, or get the DNS name from the Azure portal (such as `acomtest.westus.cloudapp.azure.com`). Open the `initialAdminPassword` file to see the default admin password:
 
-    You need to enter your GitHub username and access tokens in the same way was when you clone a repo on your local machine. The script is just automating the process and configuring some file permissions afterwards:
+```bash
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
 
-    ```bash
-    git clone https://[your GitHub user name]:[token]@github.com/[your GitHub user name]/azure-content-pr.git
-    git remote add upstream https://[your GitHub user name]:[token]@github.com/Azure/azure-content-pr.git
-    ```
+Now you can log in to the Jenkins web portal and change the password:
 
-3. Now run the script to configure git and the appropriate permissions for Jenkins to use:
-
-    ```bash
-    sudo /usr/local/acomautomation/configure_git.sh
-    ```
-
-4. The Jenkins web interface is secured by default (and Network Security Group rules are created for you to make it publicly accessible), so you need to obtain the admin password in order to log in. If you think this is an overly complex way of doing it, this is a Jenkins thing and not because of the deployment model in use here:
-
-    ```bash
-    sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-    ```
-
-    - Open a web browser and go to http://yourdomain:8080
-    - Enter `admin` for the username and then enter the value from the `initialAdminPassword` file for `Password`.
-    - Click the `admin` username in the top right-hand corner of the Jenkins portal once logged and click `Configure`.
-    - Change the password to something a little more memorable...
+- Open a web browser and go to http://yourdomain:8080
+- Enter `admin` for the username and then enter the value from the `initialAdminPassword` file for `Password`.
+- Click the `admin` username in the top right-hand corner of the Jenkins portal once logged and click `Configure`.
+- Change the password to something a little more memorable...
 
 
 ## Configuring Jenkins jobs

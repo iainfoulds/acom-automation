@@ -24,7 +24,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>cd /usr/local/acomautomation/azure-content-pr
+      <command>cd /usr/local/acomautomation/azure-content
 git pull upstream master</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
