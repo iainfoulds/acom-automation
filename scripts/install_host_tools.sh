@@ -6,8 +6,7 @@ sudo apt-get update && sudo apt-get upgrade -y
 # Grab a Jenkins build and install
 wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
 sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt-get update
-sudo apt-get install jenkins -y
+sudo apt-get update && sudo apt-get install jenkins -y
 
 # Grab a Docker build and install
 curl -sSL https://get.docker.com/ | sh
@@ -17,6 +16,8 @@ sudo usermod -aG docker jenkins
 sudo groupadd acomautomation
 sudo usermod -aG acomautomation jenkins
 sudo mkdir /usr/local/acomautomation
+sudo wget -q -O /usr/local/acomautomation/configure_git.sh https://raw.githubusercontent.com/iainfoulds/acom-automation/master/scripts/configure_git.sh
+sudo chmod +x /usr/local/acomautomation/configure_git.sh
 sudo chown -R jenkins:acomautomation /usr/local/acomautomation
 
 sudo mkdir /var/lib/jenkins/jobs/sample-acom-job
