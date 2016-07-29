@@ -31,7 +31,7 @@ sudo git remote add upstream https://github.com/Azure/azure-content.git
 sudo git fetch upstream
 sudo git pull upstream master
 
-# Finally, grab the actual automation scripts
+# Grab the actual automation scripts
 sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/acom_config.py
 sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/arm_helper.py
 sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_cleaner.py
