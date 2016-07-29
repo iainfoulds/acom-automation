@@ -36,32 +36,47 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 Now you can log in to the Jenkins web portal and change the password:
 
 - Open a web browser and go to http://yourdomain:8080
-- Enter `admin` for the username and then enter the value from the `initialAdminPassword` file for `Password`.
-- Click the `admin` username in the top right-hand corner of the Jenkins portal once logged and click `Configure`.
-- Change the password to something a little more memorable...
+- Enter the value from the `initialAdminPassword` file to begin the Jenkins first-run configuration.
+- Select `Install suggested plugins` and wait for the plugins to be enabled.
+- Enter details to create a new user (recommended), or click `Continue as admin`.
+- Click `Start using Jenkins` to finish the initial configuration and load the Jenkins web portal.
 
 
 ## Configuring Jenkins jobs
 
-In Jenkins, projects are used to define each task that you would like to run. A sample project, `sample-acom-job`, will have been created that contains the outline for your own projects. Best practice would be to simply copy this default sample acom job each time you want to create your own job.
+In Jenkins, projects are used to define each task that you would like to run. ~~ A sample project, `sample-acom-job`, will have been created that contains the outline for your own projects. Best practice would be to simply copy this default sample acom job each time you want to create your own job. ~~ This needs to be updated to work with the latest Jenkins 2.7.x release
 
 To create your own project from the ACOM sample:
 
-- Click 'New item' in the top left-hand corner. A recommendation would be to name it the same as the article you will be processing.
-- Give your project a name, then in the `Copy from` box, start typing in `sample` and select the `sample-acom-job` project.
-- Once the new project opens, feel free to edit the `Description` to match what your task will doing
+- Click 'New item' in the top left-hand corner. 
+- Enter a name for your project. A recommendation would be to name it the same as the article you will be processing.
+- Select 'Freestyle Project' as the project type
+- Click `OK`
 
-The existing ACOM sample project showcases how the actual app works. In Jenkins, the actual work is carried out by `Build` activites. Scroll down in either the sample project or your new project copied from the sample to see the build steps. The primary work is carried out in the middle execution shell:
+In Jenkins, the actual work is carried out by `Build` activites. Scroll down within your new project and click `Add build step`, then choose `Execute shell` as the build step type. We will create three build steps for every project:
 
-![Jenkins build steps](./media/jenkins_build_steps.png)
+The first build step simply tells git to pull from upstream to make sure you have the latest content that has been published to GitHub (okay, time out here - we pull from `azure-content` rather than `azure-content-pr` so we don't have to monkey with GitHub credentials and because really, we only care about what's actually published to ACOM. As such, within reason, what's in the `azure-content` repo should reflect ACOM docs, give or tag an hour or so maybe). So, in the `Command` box for your first build step, enter:
 
-Let's look at the actual steps:
+```bash
+cd /usr/local/acomautomation/azure-content
+git pull upstream master
+```
+
+The second build step is where the bulk of the coding stuff happens. These commands are detailed below. For now, create another `Execute shell` build step and enter the following:
 
 ```bash
 python /usr/local/acomautomation/code_parser.py "articles/virtual-machines/virtual-machines-linux-add-disk.md"
 python /usr/local/acomautomation/code_cleaner.py --resourcegroup=myuniquegroupname --virtualmachine=myuniquevmname --custom=size-in-GB --replace=5
 python /usr/local/acomautomation/arm_helper.py --resourcegroup --storageaccount --virtualnetwork --virtualmachine
 ```
+
+We now need to add one final build step which is actually where the real work is carried out. This final build step spins up a Docker container with the latest Azure CLI tools (again, the point is to catch any breaking changes in the Azure CLI tools, so this removes the dependency to then manually keep a Docker image updated), copies of the list of commands that were passed out of the doc, and then executes each step. Once done, it cleans up the Azure resources and removes the Docker container. So, add one final `Execute shell` build step and enter the following:
+
+```bash
+python /usr/local/acomautomation/docker_builder.py
+```
+
+Let's dive deeper in to what that middle build step is doing, since that's the only set of commands you'll change between projects. The first and last build step will always be the same.
 
 ### Code parsing
 The first line calls a Python script to parse a given MD file and find any code that is executing Azure CLI commands. You need to pass in the path to whatever doc you want to have parsed, relative to the root directory of the ACOM repo:
