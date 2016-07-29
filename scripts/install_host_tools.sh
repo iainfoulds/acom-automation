@@ -23,7 +23,7 @@ sudo service jenkins force-reload
 curl -sSL https://get.docker.com/ | sh
 sudo usermod -aG docker jenkins
 
-# Configure git to grab the azure-content repo, configure permissions
+# Configure git to grab the azure-content repo
 cd /usr/local/acomautomation
 sudo git clone https://github.com/azure/azure-content.git
 cd azure-content
@@ -31,4 +31,13 @@ sudo git remote add upstream https://github.com/Azure/azure-content.git
 sudo git fetch upstream
 sudo git pull upstream master
 
+# Finally, grab the actual automation scripts
+sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/acom_config.py
+sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/arm_helper.py
+sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_cleaner.py
+sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_parser.py
+sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/docker_builder.py
+sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/docker_builder.sh
+
+# Configure permissions
 sudo chown -R jenkins:acomautomation /usr/local/acomautomation
