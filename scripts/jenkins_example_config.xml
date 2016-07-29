@@ -2,7 +2,7 @@
 <project>
   <actions/>
   <description>Sample Jenkins job
-  Provides custom replacement value for &lt;size-in-GB&gt;&#xd;
+  Provides custom replacement value for <size-in-GB>
   Also requests a resource group, storage account, virtual network, and VM be created</description>
   <keepDependencies>false</keepDependencies>
   <properties>
