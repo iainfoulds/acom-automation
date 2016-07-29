@@ -8,6 +8,9 @@ wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add
 sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 sudo apt-get update && sudo apt-get install jenkins -y
 
+# Wait a minute, literally, for Jenkins to get itself all ready to roll after install
+sleep 1m
+
 # Add a group for automation, add the Jenkins user, create a local directory
 sudo groupadd acomautomation
 sudo usermod -aG acomautomation jenkins
@@ -32,12 +35,15 @@ sudo git fetch upstream
 sudo git pull upstream master
 
 # Grab the actual automation scripts
-sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/acom_config.py
-sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/arm_helper.py
-sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_cleaner.py
-sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_parser.py
-sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/docker_builder.py
-sudo wget -q -O https://raw.githubusercontent.com/iainfoulds/acom-automation/master/docker_builder.sh
+sudo wget -q -O /usr/local/acomautomation/acom_config.py https://raw.githubusercontent.com/iainfoulds/acom-automation/master/acom_config.py
+sudo wget -q -O /usr/local/acomautomation/arm_helper.py https://raw.githubusercontent.com/iainfoulds/acom-automation/master/arm_helper.py
+sudo wget -q -O /usr/local/acomautomation/code_cleaner.py https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_cleaner.py
+sudo wget -q -O /usr/local/acomautomation/code_parser.py https://raw.githubusercontent.com/iainfoulds/acom-automation/master/code_parser.py
+sudo wget -q -O /usr/local/acomautomation/docker_builder.py
+https://raw.githubusercontent.com/iainfoulds/acom-automation/master/docker_builder.py
+sudo wget -q -O /usr/local/acomautomation/docker_builder.sh
+https://raw.githubusercontent.com/iainfoulds/acom-automation/master/docker_builder.sh
 
 # Configure permissions
+sudo chmod +x /usr/local/acomautomation/docker_builder.sh
 sudo chown -R jenkins:acomautomation /usr/local/acomautomation
